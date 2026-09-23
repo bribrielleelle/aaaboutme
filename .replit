@@ -1,7 +1,7 @@
 run = "npm run dev"
 entrypoint = "server.ts"
 hidden = [".git", "node_modules"]
-modules = ["nodejs-20", "web", "nix"]
+modules = ["nodejs-20", "web", "nix", "bun-1.3"]
 
 [nix]
 channel = "stable-25_05"
@@ -13,3 +13,31 @@ deploymentTarget = "cloudrun"
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+[[ports]]
+localPort = 5000
+externalPort = 5000
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev -- --port 5000"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
