@@ -1,9 +1,10 @@
 run = "npm run dev"
 entrypoint = "server.ts"
 hidden = [".git", "node_modules"]
+modules = ["nodejs-20", "web", "nix"]
 
 [nix]
-channel = "stable-24_05"
+channel = "stable-25_05"
 
 [deployment]
 run = ["sh", "-c", "npm run build && npm start"]
