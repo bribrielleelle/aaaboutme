@@ -1,0 +1,9 @@
+# Replit & Git Ignore
+node_modules/
+dist/
+.cache/
+.replit.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store

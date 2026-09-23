@@ -1,0 +1,14 @@
+run = "npm run dev"
+entrypoint = "server.ts"
+hidden = [".git", "node_modules"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm run build && npm start"]
+deploymentTarget = "cloudrun"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
