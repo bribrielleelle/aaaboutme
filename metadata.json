@@ -1,0 +1,8 @@
+{
+  "name": "About Me - Brielle Davis",
+  "description": "Personal about me and portfolio website for Brielle Davis featuring background, skills, featured projects, and contact information.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
