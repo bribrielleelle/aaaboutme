@@ -1,11 +1,61 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --primary-blue: #95a9e8;
+    --secondary-pink: #fcbbfa;
+    --pastel-bg: #f8f9fe;
+    --pastel-surface: #ffffff;
+    --pastel-text: #1e2238;
+    --pastel-muted: #5e6482;
+  }
+
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--pastel-bg);
+    color: var(--pastel-text);
   }
   
   h1, h2, h3, .font-serif-display {
     font-family: 'Playfair Display', Georgia, Cambria, 'Times New Roman', Times, serif;
   }
+}
+
+/* Custom aesthetic utility highlights */
+.bg-soft-blue {
+  background-color: #95a9e8;
+}
+.bg-soft-blue-50 {
+  background-color: rgba(149, 169, 232, 0.08);
+}
+.bg-soft-blue-100 {
+  background-color: rgba(149, 169, 232, 0.18);
+}
+.border-soft-blue {
+  border-color: #95a9e8;
+}
+.border-soft-blue-200 {
+  border-color: rgba(149, 169, 232, 0.35);
+}
+.text-soft-blue-dark {
+  color: #4b62b0;
+}
+
+.bg-pastel-pink {
+  background-color: #fcbbfa;
+}
+.bg-pastel-pink-50 {
+  background-color: rgba(252, 187, 250, 0.08);
+}
+.bg-pastel-pink-100 {
+  background-color: rgba(252, 187, 250, 0.18);
+}
+.border-pastel-pink {
+  border-color: #fcbbfa;
+}
+.border-pastel-pink-200 {
+  border-color: rgba(252, 187, 250, 0.35);
+}
+.text-pastel-pink-dark {
+  color: #a03c9e;
 }
