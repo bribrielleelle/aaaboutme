@@ -97,7 +97,7 @@ export const defaultSiteContent: SiteContent = {
   name: 'Brielle Davis',
   title: 'High School Student & Aspiring Web Developer',
   subtitle: 'Exploring code, creative media, and future horizons one project at a time.',
-  bioParagraph1: "Hi, I'm Brielle Davis! I am a passionate high school student taking my first deep dive into web development and digital design. I love taking ideas from imagination to reality using code, and exploring how modern technology can empower personal storytelling.",
+  bioParagraph1: "My name is Bri'elle Davis! I'm a 9th grader starting my web design journey through AI. This class allows me to be create while learning vibe coding.",
   bioParagraph2: "Beyond programming, my world revolves around music, creative media, and planning for an exciting future in technology and design. This website serves as my digital home and living portfolio for everything I am creating and learning.",
   bioParagraph3: "When I am not coding or studying, you can find me discovering new tracks, curating playlists, experimenting with visual arts, and preparing for college life.",
   profilePhotoUrl: 'https://i.imgur.com/h1gicLO.jpeg',
