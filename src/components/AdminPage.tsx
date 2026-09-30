@@ -172,7 +172,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-900 text-white">
-              Roadmap Step 5
+              Site Administration
             </span>
             <span className="text-xs text-slate-500">·</span>
             <span className="text-xs font-medium text-slate-600">Administration & Data Control</span>
@@ -181,7 +181,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             Admin Dashboard
           </h1>
           <p className="text-sm text-slate-600">
-            Manage contact form submissions, update website biography, and configure Phase 1 layout options.
+            Manage contact form submissions, update website biography, and configure site layout options.
           </p>
         </div>
 
@@ -195,7 +195,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
         </div>
       </section>
 
-      {/* Roadmap Metrics Overview Cards */}
+      {/* Metrics Overview Cards */}
       <section className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1">
           <div className="flex items-center justify-between">
@@ -219,7 +219,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             <Camera className="w-4 h-4 text-[#fcbbfa]" />
           </div>
           <span className="text-2xl font-serif-display font-bold text-slate-900">{content.mediaList.length}</span>
-          <span className="text-[11px] text-slate-400">Step 2 gallery entries</span>
+          <span className="text-[11px] text-slate-400">Active gallery entries</span>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1">
@@ -228,7 +228,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             <Compass className="w-4 h-4 text-[#95a9e8]" />
           </div>
           <span className="text-2xl font-serif-display font-bold text-slate-900">{content.futureGoals.length}</span>
-          <span className="text-[11px] text-slate-400">Step 3 academic roadmap</span>
+          <span className="text-[11px] text-slate-400">Academic milestones</span>
         </div>
 
         <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs space-y-1">
@@ -237,7 +237,7 @@ export const AdminPage: React.FC<AdminPageProps> = ({
             <Music2 className="w-4 h-4 text-[#fcbbfa]" />
           </div>
           <span className="text-2xl font-serif-display font-bold text-slate-900">{content.musicList.length}</span>
-          <span className="text-[11px] text-slate-400">Step 4 heavy rotation</span>
+          <span className="text-[11px] text-slate-400">Tracks in rotation</span>
         </div>
       </section>
 

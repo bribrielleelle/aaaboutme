@@ -12,7 +12,8 @@ import {
   Plus, 
   Quote, 
   Award,
-  BookOpen
+  BookOpen,
+  Music2
 } from 'lucide-react';
 
 interface FuturePageProps {
@@ -103,7 +104,7 @@ export const FuturePage: React.FC<FuturePageProps> = ({
           <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-pastel-pink text-[#761c74]">
-                Roadmap Step 3
+                Future Ambitions
               </span>
               <span className="text-xs text-slate-500">·</span>
               <span className="text-xs font-medium text-slate-600">Aspirations & Future Horizons</span>
@@ -127,7 +128,7 @@ export const FuturePage: React.FC<FuturePageProps> = ({
       </section>
 
       {/* Core Aspirations Cards */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Career Aspiration */}
         <div className="bg-white rounded-2xl p-6 border border-soft-blue-200/90 shadow-xs space-y-4">
           <div className="flex items-center justify-between">
@@ -142,14 +143,14 @@ export const FuturePage: React.FC<FuturePageProps> = ({
               {content.careerAspiration}
             </h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              Striving to design and engineer web applications that feel effortless, intuitive, and visually harmonious. Aiming to bridge design systems with scalable frontend engineering.
+              {content.careerDescription || "Also in my free time, I enjoy building exteriors and interiors in games and apps that allow me to put my decorating skills to the test and show other players. I want to get into Real Estate and show people what I can sell and help find their forever home. I admire the beauty of architecture, and this job allows me to appreciate it."}
             </p>
           </div>
 
           <div className="pt-2 flex flex-wrap gap-2 text-[11px] font-medium text-slate-600">
-            <span className="px-2.5 py-1 rounded-md bg-slate-100">Frontend Engineering</span>
-            <span className="px-2.5 py-1 rounded-md bg-slate-100">UI/UX Systems</span>
-            <span className="px-2.5 py-1 rounded-md bg-slate-100">Interactive Media</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Interior Design</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Real Estate</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Architectural Aesthetics</span>
           </div>
         </div>
 
@@ -167,14 +168,40 @@ export const FuturePage: React.FC<FuturePageProps> = ({
               {content.dreamCollege}
             </h3>
             <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-              Preparing for a four-year collegiate journey specializing in Computer Science, Human-Computer Interaction, and digital creative arts.
+              {content.dreamCollegeDescription || "I have many ambitions for myself, and completing 2 years of college for free is one of them! Majoring in Interior Design and going to school for Business Administration, Marketing, and Finance for 4 or more years of schooling is my goal to becoming who I want to be."}
             </p>
           </div>
 
           <div className="pt-2 flex flex-wrap gap-2 text-[11px] font-medium text-slate-600">
-            <span className="px-2.5 py-1 rounded-md bg-slate-100">B.S. Computer Science</span>
-            <span className="px-2.5 py-1 rounded-md bg-slate-100">STEM Academic Honors</span>
-            <span className="px-2.5 py-1 rounded-md bg-slate-100">Design Labs</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Community College Transfer</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Interior Design</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Business Administration</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Marketing & Finance</span>
+          </div>
+        </div>
+
+        {/* Dreams & Creative Ambition */}
+        <div className="bg-white rounded-2xl p-6 border border-purple-200/90 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center">
+              <Music2 className="w-5 h-5" />
+            </div>
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Creative Horizon</span>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-serif-display font-bold text-slate-900">
+              {content.dreamsHeader || "Dreams"}
+            </h3>
+            <p className="text-xs text-slate-600 mt-2 leading-relaxed">
+              {content.dreamsDescription || "I have other dreams that I want to accomplish, such as becoming a music artist or a producer. I play Bass, Guitar, Keyboard, And Drums and I could be a one woman band myself not gonna lie. Theres many bands and artists that give me inspiration like Brent Faiyaz, Pierce The Veil, and Steve Lacy."}
+            </p>
+          </div>
+
+          <div className="pt-2 flex flex-wrap gap-2 text-[11px] font-medium text-slate-600">
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Music Artist & Producer</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">One-Woman Band</span>
+            <span className="px-2.5 py-1 rounded-md bg-slate-100">Bass · Guitar · Drums · Keys</span>
           </div>
         </div>
       </section>
@@ -451,8 +478,8 @@ export const FuturePage: React.FC<FuturePageProps> = ({
       {/* Next Up Navigation */}
       <div className="p-6 rounded-2xl bg-white border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Next Up in Roadmap:</span>
-          <h4 className="font-serif-display font-bold text-slate-900 text-lg">Roadmap Step 4: Music Page</h4>
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Continue Exploring:</span>
+          <h4 className="font-serif-display font-bold text-slate-900 text-lg">Music & Inspiration</h4>
           <p className="text-xs text-slate-600">Explore heavy rotation playlists, favorite artists, and interactive player.</p>
         </div>
         <button

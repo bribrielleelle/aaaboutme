@@ -12,12 +12,9 @@ import {
   Copy, 
   Send, 
   Camera, 
-  Settings2, 
-  Sliders, 
   Music2, 
-  HelpCircle,
   Compass,
-  FileCheck
+  Settings2
 } from 'lucide-react';
 import { 
   GithubIcon, 
@@ -45,10 +42,6 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [contactEmail, setContactEmail] = useState('');
   const [contactSubject, setContactSubject] = useState('');
   const [contactMessage, setContactMessage] = useState('');
-  
-  // Phase 1 Interactive Layout Testing Drawer / Panel
-  const [showLayoutConfig, setShowLayoutConfig] = useState(false);
-  const [showPhase1Checklist, setShowPhase1Checklist] = useState(true);
 
   // Profile image upload simulation or custom URL
   const [isEditingPhoto, setIsEditingPhoto] = useState(false);
@@ -82,16 +75,6 @@ export const HomePage: React.FC<HomePageProps> = ({
     }, 4500);
   };
 
-  const handleLayoutChange = (key: keyof SiteContent['layoutPreferences'], value: string) => {
-    onUpdateContent({
-      ...content,
-      layoutPreferences: {
-        ...content.layoutPreferences,
-        [key]: value
-      }
-    });
-  };
-
   const handleSavePhoto = () => {
     onUpdateContent({
       ...content,
@@ -105,164 +88,6 @@ export const HomePage: React.FC<HomePageProps> = ({
 
   return (
     <div className="space-y-16">
-      {/* Phase 1 Rubric Assistant Floating Banner */}
-      <section className="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-soft-blue-200 shadow-sm transition-all">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-soft-blue text-[#2e3e7a]">
-                <FileCheck className="w-3.5 h-3.5" />
-                Phase 1: Home Page Active
-              </span>
-              <span className="text-xs text-slate-500">·</span>
-              <span className="text-xs font-medium text-slate-600">Roadmap Step 1 of 5</span>
-            </div>
-            <p className="text-sm text-slate-700 font-medium">
-              Review and test your Biography, Profile Photo, Contact Links, and Layout Preferences below!
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2.5 w-full md:w-auto">
-            <button
-              onClick={() => setShowLayoutConfig(!showLayoutConfig)}
-              className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-lg bg-soft-blue-100 text-[#304485] hover:bg-soft-blue/30 border border-soft-blue/40 transition-colors"
-            >
-              <Sliders className="w-3.5 h-3.5" />
-              <span>{showLayoutConfig ? 'Hide Layout Controls' : 'Test Layout Decisions'}</span>
-            </button>
-            <button
-              onClick={() => setShowPhase1Checklist(!showPhase1Checklist)}
-              className="inline-flex items-center justify-center p-2 text-xs font-medium rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-              title="Toggle checklist"
-            >
-              <HelpCircle className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Phase 1 Checklist Detail */}
-        {showPhase1Checklist && (
-          <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-            <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/50 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-emerald-900 block font-semibold">1. Biography Content</strong>
-                <span className="text-emerald-700">Final high school student narrative included & editable.</span>
-              </div>
-            </div>
-
-            <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/50 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-emerald-900 block font-semibold">2. Profile Photo & Caption</strong>
-                <span className="text-emerald-700">High-res portrait with custom caption and photo changer.</span>
-              </div>
-            </div>
-
-            <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/50 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-emerald-900 block font-semibold">3. Email & Contact Form</strong>
-                <span className="text-emerald-700">Verified email (brielledavis919@gmail.com) with storage.</span>
-              </div>
-            </div>
-
-            <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/50 flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-              <div>
-                <strong className="text-emerald-900 block font-semibold">4. Layout Decisions</strong>
-                <span className="text-emerald-700">Photo left/right & contact styling ready to test live.</span>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Live Layout Decision Switcher */}
-        {showLayoutConfig && (
-          <div className="mt-4 p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
-                <Settings2 className="w-4 h-4 text-[#4b62b0]" />
-                Live Layout & Styling Decisions (Phase 1)
-              </span>
-              <span className="text-[11px] text-slate-500">Changes apply immediately to this page</span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {/* Photo Position Decision */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  Profile Photo Position:
-                </label>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {(['right', 'left', 'top'] as const).map((pos) => (
-                    <button
-                      key={pos}
-                      onClick={() => handleLayoutChange('photoPosition', pos)}
-                      className={`py-1.5 text-xs font-medium rounded-lg capitalize border transition-all ${
-                        photoPosition === pos
-                          ? 'bg-[#95a9e8] text-slate-900 border-[#728ce0] font-semibold shadow-xs'
-                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {pos}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Text Alignment Decision */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  Bio Text Alignment:
-                </label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {(['left', 'center'] as const).map((align) => (
-                    <button
-                      key={align}
-                      onClick={() => handleLayoutChange('textAlign', align)}
-                      className={`py-1.5 text-xs font-medium rounded-lg capitalize border transition-all ${
-                        textAlign === align
-                          ? 'bg-[#95a9e8] text-slate-900 border-[#728ce0] font-semibold shadow-xs'
-                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {align}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Contact Section Styling Decision */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                  Contact Section Layout:
-                </label>
-                <div className="grid grid-cols-3 gap-1.5">
-                  {[
-                    { id: 'two-column', label: '2-Col' },
-                    { id: 'boxed-card', label: 'Boxed' },
-                    { id: 'minimalist', label: 'Clean' }
-                  ].map((style) => (
-                    <button
-                      key={style.id}
-                      onClick={() => handleLayoutChange('contactStyle', style.id)}
-                      className={`py-1.5 text-xs font-medium rounded-lg capitalize border transition-all ${
-                        contactStyle === style.id
-                          ? 'bg-[#fcbbfa] text-slate-900 border-[#eb92e8] font-semibold shadow-xs'
-                          : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-100'
-                      }`}
-                    >
-                      {style.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </section>
-
       {/* Hero & Biography Section */}
       <section 
         className={`transition-all ${
@@ -308,7 +133,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             <span className="text-slate-300">·</span>
             <span className="inline-flex items-center gap-1.5 font-medium">
               <Sparkles className="w-4 h-4 text-[#fcbbfa]" />
-              High School Class of 2027
+              Grossmont Highschool Class of 2030
             </span>
             <span className="text-slate-300">·</span>
             <span className="inline-flex items-center gap-1.5 font-medium">
@@ -405,10 +230,11 @@ export const HomePage: React.FC<HomePageProps> = ({
               <img
                 src={content.profilePhotoUrl}
                 alt={content.name}
+                referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-500"
                 onError={(e) => {
                   // Fallback placeholder image if URL fails
-                  e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80';
+                  e.currentTarget.src = 'https://i.imgur.com/1okze8g.jpeg';
                 }}
               />
 
@@ -476,19 +302,19 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </section>
 
-      {/* Quick Roadmap Navigation Preview */}
+      {/* Quick Explore Section */}
       <section className="bg-gradient-to-r from-soft-blue-50 to-pastel-pink-50 rounded-2xl p-6 border border-slate-200">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="text-xl font-serif-display font-bold text-slate-900">
-              Explore All 5 Website Pages
+              Explore Portfolio Sections
             </h2>
             <p className="text-xs text-slate-600 mt-0.5">
-              Structured to follow your 5-step curriculum: Home, Media, My Future, Music, and Admin.
+              Discover media showcases, future aspirations, heavy rotation soundtracks, and admin controls.
             </p>
           </div>
           <span className="text-xs font-semibold px-3 py-1 rounded-full bg-white text-slate-700 border border-slate-200 shadow-xs">
-            Phase 1 / 5 Ready
+            Full Portfolio Live
           </span>
         </div>
 
@@ -501,7 +327,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Camera className="w-4 h-4" />
             </div>
             <strong className="text-sm font-semibold text-slate-800 block group-hover:text-[#304485]">
-              2. Media Page
+              Media Gallery
             </strong>
             <p className="text-xs text-slate-500 mt-1 line-clamp-2">
               Photo galleries, project visuals, school highlights, and captions.
@@ -516,7 +342,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Compass className="w-4 h-4" />
             </div>
             <strong className="text-sm font-semibold text-slate-800 block group-hover:text-[#882b86]">
-              3. My Future Page
+              My Future & Goals
             </strong>
             <p className="text-xs text-slate-500 mt-1 line-clamp-2">
               College roadmap, career aspirations, and high school milestone timeline.
@@ -531,7 +357,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Music2 className="w-4 h-4" />
             </div>
             <strong className="text-sm font-semibold text-slate-800 block group-hover:text-[#304485]">
-              4. Music Page
+              Music & Playlist
             </strong>
             <p className="text-xs text-slate-500 mt-1 line-clamp-2">
               Heavy rotation playlists, interactive music player, and favorite artists.
@@ -546,7 +372,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               <Settings2 className="w-4 h-4" />
             </div>
             <strong className="text-sm font-semibold text-slate-800 block group-hover:text-slate-900">
-              5. Admin Dashboard
+              Admin Dashboard
             </strong>
             <p className="text-xs text-slate-500 mt-1 line-clamp-2">
               Review received contact messages and update site content anytime.
@@ -559,7 +385,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       <section id="contact" className="scroll-mt-24 pt-4">
         <div className="mb-8 text-center max-w-xl mx-auto space-y-2">
           <span className="text-xs font-bold uppercase tracking-wider text-[#354888]">
-            Phase 1 Contact Requirement
+            Get in Touch
           </span>
           <h2 className="text-3xl font-serif-display font-bold text-slate-900">
             Let's Start a Conversation

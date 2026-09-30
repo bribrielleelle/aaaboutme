@@ -15,7 +15,8 @@ import {
   ChevronRight,
   Copy,
   CheckCircle2,
-  Search
+  Search,
+  ExternalLink
 } from 'lucide-react';
 
 interface MediaPageProps {
@@ -34,15 +35,17 @@ export const MediaPage: React.FC<MediaPageProps> = ({
   const [lightboxItem, setLightboxItem] = useState<MediaItem | null>(null);
   const [showAddModal, setShowAddModal] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [albumPhotoIndex, setAlbumPhotoIndex] = useState<{ [id: string]: number }>({});
+  const [lightboxAlbumIndex, setLightboxAlbumIndex] = useState<number>(0);
 
   // New Media Form state
   const [newTitle, setNewTitle] = useState('');
-  const [newCategory, setNewCategory] = useState<MediaItem['category']>('School Projects');
+  const [newCategory, setNewCategory] = useState<MediaItem['category']>('Friends & Hangouts');
   const [newCaption, setNewCaption] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [newDate, setNewDate] = useState('2026');
 
-  const categories = ['All', 'School Projects', 'Digital Art', 'Photography', 'Achievements'];
+  const categories = ['All', 'School Projects', 'Friends & Hangouts', 'Digital Art', 'Photography', 'Achievements'];
 
   // Category counts
   const getCategoryCount = (cat: string) => {
@@ -65,20 +68,29 @@ export const MediaPage: React.FC<MediaPageProps> = ({
       if (e.key === 'Escape') {
         setLightboxItem(null);
       } else if (e.key === 'ArrowRight') {
-        handleNextLightbox();
+        if (lightboxItem.albumImages && lightboxItem.albumImages.length > 1) {
+          setLightboxAlbumIndex(prev => (prev + 1) % lightboxItem.albumImages!.length);
+        } else {
+          handleNextLightbox();
+        }
       } else if (e.key === 'ArrowLeft') {
-        handlePrevLightbox();
+        if (lightboxItem.albumImages && lightboxItem.albumImages.length > 1) {
+          setLightboxAlbumIndex(prev => (prev - 1 + lightboxItem.albumImages!.length) % lightboxItem.albumImages!.length);
+        } else {
+          handlePrevLightbox();
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxItem, filteredMedia]);
+  }, [lightboxItem, filteredMedia, lightboxAlbumIndex]);
 
   const handleNextLightbox = () => {
     if (!lightboxItem) return;
     const currentIndex = filteredMedia.findIndex(i => i.id === lightboxItem.id);
     const nextIndex = (currentIndex + 1) % filteredMedia.length;
     setLightboxItem(filteredMedia[nextIndex]);
+    setLightboxAlbumIndex(0);
   };
 
   const handlePrevLightbox = () => {
@@ -86,6 +98,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({
     const currentIndex = filteredMedia.findIndex(i => i.id === lightboxItem.id);
     const prevIndex = (currentIndex - 1 + filteredMedia.length) % filteredMedia.length;
     setLightboxItem(filteredMedia[prevIndex]);
+    setLightboxAlbumIndex(0);
   };
 
   const handleCopyImageUrl = (url: string) => {
@@ -146,7 +159,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({
           <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-soft-blue text-[#2b3a75]">
-                Roadmap Step 2
+                Creative Works
               </span>
               <span className="text-xs text-slate-500">·</span>
               <span className="text-xs font-medium text-slate-600">Visual Curation & Media</span>
@@ -225,72 +238,162 @@ export const MediaPage: React.FC<MediaPageProps> = ({
         </div>
       ) : (
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredMedia.map(item => (
-            <div
-              key={item.id}
-              onClick={() => setLightboxItem(item)}
-              className="group bg-white rounded-2xl border border-slate-200/90 overflow-hidden hover:border-[#95a9e8] hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
-            >
-              <div>
-                {/* Image Preview with Hover Overlay */}
-                <div className="relative aspect-16/10 bg-slate-100 overflow-hidden">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80';
-                    }}
-                  />
-                  <div className="absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-slate-800 flex items-center gap-1.5 shadow-sm">
-                      <Maximize2 className="w-3.5 h-3.5 text-[#465caf]" />
-                      <span>View Detail</span>
+          {filteredMedia.map(item => {
+            const isAlbum = Boolean(item.isAlbum || (item.albumImages && item.albumImages.length > 0));
+            const currentAlbumIdx = isAlbum ? (albumPhotoIndex[item.id] || 0) : 0;
+            const displayImg = isAlbum && item.albumImages && item.albumImages.length > 0 
+              ? item.albumImages[currentAlbumIdx] 
+              : item.imageUrl;
+
+            return (
+              <div
+                key={item.id}
+                onClick={() => {
+                  setLightboxItem(item);
+                  setLightboxAlbumIndex(currentAlbumIdx);
+                }}
+                className={`group bg-white rounded-2xl border border-slate-200/90 overflow-hidden hover:border-[#95a9e8] hover:shadow-lg transition-all cursor-pointer flex flex-col justify-between relative ${
+                  isAlbum ? 'ring-1 ring-[#fcbbfa]/40' : ''
+                }`}
+              >
+                {/* Physical stacked polaroid / album visual effect */}
+                {isAlbum && item.albumImages && item.albumImages.length > 1 && (
+                  <>
+                    <div className="absolute -top-1.5 -right-1.5 w-full h-full rounded-2xl bg-gradient-to-tr from-soft-blue-100 to-pastel-pink-100 -z-10 transform rotate-1 border border-pastel-pink-200 pointer-events-none"></div>
+                    <div className="absolute -top-1 -left-1 w-full h-full rounded-2xl bg-slate-100 -z-20 transform -rotate-1 border border-slate-200 pointer-events-none"></div>
+                  </>
+                )}
+
+                <div>
+                  {/* Image Preview with Hover Overlay & Album Flip Controls */}
+                  <div className="relative aspect-16/10 bg-slate-100 overflow-hidden">
+                    <img
+                      src={displayImg}
+                      alt={item.title}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+                      onError={(e) => {
+                        e.currentTarget.src = 'https://i.imgur.com/WiDkAxX.jpeg';
+                      }}
+                    />
+
+                    {/* Album slide controls directly on card */}
+                    {isAlbum && item.albumImages && item.albumImages.length > 1 && (
+                      <>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const total = item.albumImages!.length;
+                            setAlbumPhotoIndex(prev => ({
+                              ...prev,
+                              [item.id]: (currentAlbumIdx - 1 + total) % total
+                            }));
+                          }}
+                          className="absolute left-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-md"
+                          title="Previous photo in album"
+                        >
+                          <ChevronLeft className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const total = item.albumImages!.length;
+                            setAlbumPhotoIndex(prev => ({
+                              ...prev,
+                              [item.id]: (currentAlbumIdx + 1) % total
+                            }));
+                          }}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity z-20 shadow-md"
+                          title="Next photo in album"
+                        >
+                          <ChevronRight className="w-4 h-4" />
+                        </button>
+
+                        {/* Interactive Dot indicators */}
+                        <div className="absolute bottom-2.5 inset-x-0 flex items-center justify-center gap-1.5 z-20">
+                          {item.albumImages.map((_, dotIdx) => (
+                            <button
+                              key={dotIdx}
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAlbumPhotoIndex(prev => ({ ...prev, [item.id]: dotIdx }));
+                              }}
+                              className={`h-1.5 rounded-full transition-all ${
+                                dotIdx === currentAlbumIdx ? 'w-4 bg-white shadow-xs' : 'w-1.5 bg-white/60 hover:bg-white'
+                              }`}
+                              title={`Photo ${dotIdx + 1}`}
+                            />
+                          ))}
+                        </div>
+                      </>
+                    )}
+
+                    <div className="absolute inset-0 bg-slate-900/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                      <span className="px-3 py-1.5 rounded-full bg-white/90 backdrop-blur-sm text-xs font-semibold text-slate-800 flex items-center gap-1.5 shadow-sm">
+                        <Maximize2 className="w-3.5 h-3.5 text-[#465caf]" />
+                        <span>{isAlbum ? 'Open Photo Album' : 'View Detail'}</span>
+                      </span>
+                    </div>
+
+                    <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md text-[10px] font-semibold bg-white/90 backdrop-blur-sm text-slate-700 shadow-xs z-10">
+                      {item.category}
                     </span>
+
+                    {isAlbum && item.albumImages && (
+                      <span className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-md text-[10px] font-bold bg-slate-900/85 text-white backdrop-blur-sm shadow-xs flex items-center gap-1 z-10">
+                        <Layers className="w-3 h-3 text-[#fcbbfa]" />
+                        <span>Album ({currentAlbumIdx + 1}/{item.albumImages.length})</span>
+                      </span>
+                    )}
                   </div>
 
-                  <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md text-[10px] font-semibold bg-white/90 backdrop-blur-sm text-slate-700 shadow-xs">
-                    {item.category}
+                  {/* Card Meta & Caption */}
+                  <div className="p-4 space-y-2">
+                    <div className="flex items-center justify-between text-[11px] text-slate-500">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-slate-400" />
+                        {item.date}
+                      </span>
+                      {isAlbum && (
+                        <span className="text-[10px] font-semibold text-[#882b86] bg-pastel-pink-50 px-2 py-0.5 rounded-full border border-pastel-pink-200">
+                          Photo Album
+                        </span>
+                      )}
+                    </div>
+
+                    <h3 className="font-semibold text-slate-900 text-base group-hover:text-[#324584] transition-colors">
+                      {item.title}
+                    </h3>
+
+                    <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
+                      {item.caption}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="px-4 pb-4 pt-1 flex items-center justify-between border-t border-slate-100 text-xs">
+                  <span className="text-[11px] font-medium text-[#465caf] group-hover:underline">
+                    {isAlbum ? 'Browse all album photos →' : 'Expand caption →'}
                   </span>
-                </div>
-
-                {/* Card Meta & Caption */}
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-3 h-3 text-slate-400" />
-                      {item.date}
-                    </span>
-                  </div>
-
-                  <h3 className="font-semibold text-slate-900 text-base group-hover:text-[#324584] transition-colors">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-xs text-slate-600 leading-relaxed line-clamp-2">
-                    {item.caption}
-                  </p>
+                  <button
+                    onClick={(e) => handleDeleteMedia(item.id, e)}
+                    className="text-slate-400 hover:text-rose-500 text-[11px] transition-colors p-1"
+                    title="Remove item"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
-
-              <div className="px-4 pb-4 pt-1 flex items-center justify-between border-t border-slate-100 text-xs">
-                <span className="text-[11px] font-medium text-[#465caf] group-hover:underline">
-                  Expand caption →
-                </span>
-                <button
-                  onClick={(e) => handleDeleteMedia(item.id, e)}
-                  className="text-slate-400 hover:text-rose-500 text-[11px] transition-colors p-1"
-                  title="Remove item"
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </section>
       )}
 
-      {/* Lightbox Modal with Next / Prev */}
+      {/* Lightbox Modal with Next / Prev & Album Filmstrip */}
       {lightboxItem && (
         <div 
           onClick={() => setLightboxItem(null)}
@@ -300,37 +403,95 @@ export const MediaPage: React.FC<MediaPageProps> = ({
             onClick={(e) => e.stopPropagation()}
             className="bg-white rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-slate-200 animate-scale-up relative"
           >
+            {/* Header tag for albums */}
+            {lightboxItem.albumImages && lightboxItem.albumImages.length > 1 && (
+              <div className="px-6 py-2.5 bg-slate-900 text-white text-xs flex items-center justify-between">
+                <span className="flex items-center gap-1.5 font-semibold text-[#fcbbfa]">
+                  <Layers className="w-3.5 h-3.5" />
+                  Photo Album: {lightboxItem.title}
+                </span>
+                <span className="text-[11px] text-slate-300">
+                  Photo {lightboxAlbumIndex + 1} of {lightboxItem.albumImages.length}
+                </span>
+              </div>
+            )}
+
             <div className="relative aspect-16/10 bg-slate-950 flex items-center justify-center">
               <img
-                src={lightboxItem.imageUrl}
+                src={
+                  lightboxItem.albumImages && lightboxItem.albumImages.length > 0
+                    ? lightboxItem.albumImages[lightboxAlbumIndex]
+                    : lightboxItem.imageUrl
+                }
                 alt={lightboxItem.title}
+                referrerPolicy="no-referrer"
                 className="w-full h-full object-contain"
               />
 
               {/* Prev / Next navigation inside lightbox */}
               <button
-                onClick={handlePrevLightbox}
-                className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white transition-colors"
-                title="Previous image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (lightboxItem.albumImages && lightboxItem.albumImages.length > 1) {
+                    setLightboxAlbumIndex(prev => (prev - 1 + lightboxItem.albumImages!.length) % lightboxItem.albumImages!.length);
+                  } else {
+                    handlePrevLightbox();
+                  }
+                }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white transition-colors shadow-md"
+                title="Previous photo"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
-                onClick={handleNextLightbox}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white transition-colors"
-                title="Next image"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (lightboxItem.albumImages && lightboxItem.albumImages.length > 1) {
+                    setLightboxAlbumIndex(prev => (prev + 1) % lightboxItem.albumImages!.length);
+                  } else {
+                    handleNextLightbox();
+                  }
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white transition-colors shadow-md"
+                title="Next photo"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>
 
               <button
                 onClick={() => setLightboxItem(null)}
-                className="absolute top-3 right-3 p-2 rounded-full bg-slate-900/70 text-white hover:bg-slate-900 transition-colors"
+                className="absolute top-3 right-3 p-2 rounded-full bg-slate-900/70 text-white hover:bg-slate-900 transition-colors shadow-md z-30"
                 title="Close"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
+
+            {/* Album Filmstrip Thumbnails */}
+            {lightboxItem.albumImages && lightboxItem.albumImages.length > 1 && (
+              <div className="bg-slate-900 p-2.5 flex items-center justify-center gap-2 overflow-x-auto border-t border-slate-800">
+                {lightboxItem.albumImages.map((thumbUrl, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setLightboxAlbumIndex(idx)}
+                    className={`w-14 h-10 rounded-lg overflow-hidden shrink-0 border-2 transition-all ${
+                      idx === lightboxAlbumIndex 
+                        ? 'border-[#fcbbfa] scale-105 shadow-md' 
+                        : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                    title={`Go to photo ${idx + 1}`}
+                  >
+                    <img
+                      src={thumbUrl}
+                      alt={`Thumbnail ${idx + 1}`}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
 
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
@@ -339,7 +500,12 @@ export const MediaPage: React.FC<MediaPageProps> = ({
                 </span>
                 <div className="flex items-center gap-3">
                   <button
-                    onClick={() => handleCopyImageUrl(lightboxItem.imageUrl)}
+                    onClick={() => {
+                      const currentUrl = lightboxItem.albumImages && lightboxItem.albumImages.length > 0
+                        ? lightboxItem.albumImages[lightboxAlbumIndex]
+                        : lightboxItem.imageUrl;
+                      handleCopyImageUrl(currentUrl);
+                    }}
                     className="inline-flex items-center gap-1 text-[11px] text-slate-500 hover:text-slate-800"
                   >
                     {copiedLink ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
@@ -358,6 +524,19 @@ export const MediaPage: React.FC<MediaPageProps> = ({
                 <p className="text-sm text-slate-700 leading-relaxed">
                   {lightboxItem.caption}
                 </p>
+                {lightboxItem.caption.includes('briellesweets.replit.app') && (
+                  <div className="pt-2">
+                    <a
+                      href="https://briellesweets.replit.app"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-soft-blue text-slate-900 hover:bg-[#839ce2] text-xs font-semibold shadow-xs transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Open Live Site: briellesweets.replit.app</span>
+                    </a>
+                  </div>
+                )}
               </div>
 
               <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
@@ -456,6 +635,7 @@ export const MediaPage: React.FC<MediaPageProps> = ({
                   className="w-full px-3 py-2 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-[#95a9e8] focus:outline-none"
                 >
                   <option value="School Projects">School Projects</option>
+                  <option value="Friends & Hangouts">Friends & Hangouts</option>
                   <option value="Digital Art">Digital Art</option>
                   <option value="Photography">Photography</option>
                   <option value="Achievements">Achievements</option>
@@ -517,11 +697,11 @@ export const MediaPage: React.FC<MediaPageProps> = ({
         </div>
       )}
 
-      {/* Footer Navigation to Next Roadmap Item */}
+      {/* Footer Navigation */}
       <div className="p-6 rounded-2xl bg-white border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Next Up in Roadmap:</span>
-          <h4 className="font-serif-display font-bold text-slate-900 text-lg">Roadmap Step 3: My Future Page</h4>
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Continue Exploring:</span>
+          <h4 className="font-serif-display font-bold text-slate-900 text-lg">My Future & Ambitions</h4>
           <p className="text-xs text-slate-600">Discover college goals, career ambitions, and milestone timeline.</p>
         </div>
         <button

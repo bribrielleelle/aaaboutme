@@ -39,7 +39,107 @@ export default function App() {
   const [content, setContent] = useState<SiteContent>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed: SiteContent = JSON.parse(saved);
+        let updated = false;
+        if (parsed.mediaList) {
+          parsed.mediaList = parsed.mediaList.map(item => {
+            if (item.id === 'm1' || item.title === 'First Web Project Prototype') {
+              updated = true;
+              return {
+                ...item,
+                caption: 'Initial responsive layout wireframes and aesthetic color studies utilizing pastel palettes (#95a9e8 and #fcbbfa). Live prototype: briellesweets.replit.app',
+                imageUrl: 'https://i.imgur.com/E4VnBsR.jpeg'
+              };
+            }
+            if (item.id === 'm2' || item.title === 'Digital Art & Palette Explorations' || item.title === 'Friends And Hangouts') {
+              updated = true;
+              return {
+                ...item,
+                title: 'Friends And Hangouts',
+                category: 'Friends & Hangouts' as const,
+                caption: 'Memorable times with friends — weekend hangouts, spontaneous laughter, and making the best memories together.',
+                imageUrl: 'https://i.imgur.com/WiDkAxX.jpeg',
+                isAlbum: true,
+                albumImages: [
+                  'https://i.imgur.com/WiDkAxX.jpeg',
+                  'https://i.imgur.com/hSJPWEZ.jpeg',
+                  'https://i.imgur.com/LmsmwZj.jpeg',
+                  'https://i.imgur.com/Ncw6bWU.jpeg',
+                  'https://i.imgur.com/66W4NTB.jpeg',
+                  'https://i.imgur.com/GLm7kd6.jpeg'
+                ]
+              };
+            }
+            if (item.id === 'm3' || item.title === 'Sunset Horizon Photography') {
+              updated = true;
+              return {
+                ...item,
+                title: 'Sunset Beach Photography',
+                imageUrl: 'https://i.imgur.com/Dc3OD0q.jpeg'
+              };
+            }
+            return item;
+          });
+        }
+        if (parsed.socials) {
+          if (!parsed.socials.instagram || parsed.socials.instagram === 'https://instagram.com') {
+            parsed.socials.instagram = 'https://www.instagram.com/bribrielleelle/';
+            updated = true;
+          }
+        }
+        if (parsed.musicList) {
+          parsed.musicList = parsed.musicList.map(song => {
+            if (song.id === 's1' || song.title === 'Golden Hour Memories') {
+              updated = true;
+              return {
+                ...song,
+                title: 'BLIND',
+                artist: 'EJ Ross, Jay Versace',
+                album: 'BLIND - Single',
+                duration: '3:03',
+                coverUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27309b4551ff5a12d74dc8ef4a2',
+                genre: 'R&B / Soul',
+                spotifyTrackId: '5AzdIvh2bSJzcPyIwtYDog',
+                spotifyUrl: 'https://open.spotify.com/track/5AzdIvh2bSJzcPyIwtYDog?si=67b87e67b3c746f7'
+              };
+            }
+            return song;
+          });
+        }
+        if (parsed.profilePhotoUrl === 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80' || !parsed.profilePhotoUrl) {
+          parsed.profilePhotoUrl = 'https://i.imgur.com/1okze8g.jpeg';
+          updated = true;
+        }
+        if (!parsed.careerAspiration || parsed.careerAspiration === 'Creative Technologist & Frontend Software Engineer') {
+          parsed.careerAspiration = 'Interior Designer & Real Estate Agent';
+          updated = true;
+        }
+        if (!parsed.careerDescription || parsed.careerDescription.includes('Striving to design and engineer web applications')) {
+          parsed.careerDescription = 'Also in my free time, I enjoy building exteriors and interiors in games and apps that allow me to put my decorating skills to the test and show other players. I want to get into Real Estate and show people what I can sell and help find their forever home. I admire the beauty of architecture, and this job allows me to appreciate it.';
+          updated = true;
+        }
+        if (!parsed.dreamCollege || parsed.dreamCollege === 'Top University for Computer Science & Interactive Media Design') {
+          parsed.dreamCollege = 'Community College into a University';
+          updated = true;
+        }
+        if (!parsed.dreamCollegeDescription || parsed.dreamCollegeDescription.includes('Preparing for a four-year collegiate journey')) {
+          parsed.dreamCollegeDescription = 'I have many ambitions for myself, and completing 2 years of college for free is one of them! Majoring in Interior Design and going to school for Business Administration, Marketing, and Finance for 4 or more years of schooling is my goal to becoming who I want to be.';
+          updated = true;
+        }
+        if (!parsed.dreamsHeader) {
+          parsed.dreamsHeader = 'Dreams';
+          updated = true;
+        }
+        if (!parsed.dreamsDescription) {
+          parsed.dreamsDescription = 'I have other dreams that I want to accomplish, such as becoming a music artist or a producer. I play Bass, Guitar, Keyboard, And Drums and I could be a one woman band myself not gonna lie. Theres many bands and artists that give me inspiration like Brent Faiyaz, Pierce The Veil, and Steve Lacy.';
+          updated = true;
+        }
+        if (updated) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+        }
+        return parsed;
+      }
     } catch (e) {
       console.error('Failed to read localStorage content', e);
     }
@@ -114,11 +214,11 @@ export default function App() {
   const unreadCount = submissions.filter(s => !s.read).length;
 
   const navItems: NavItem[] = [
-    { id: 'home', label: '1. Home', icon: Home },
-    { id: 'media', label: '2. Media', icon: Camera },
-    { id: 'future', label: '3. My Future', icon: Compass },
-    { id: 'music', label: '4. Music', icon: Music2 },
-    { id: 'admin', label: '5. Admin', icon: Settings2, badge: unreadCount > 0 ? unreadCount : null }
+    { id: 'home', label: 'Home', icon: Home },
+    { id: 'media', label: 'Media', icon: Camera },
+    { id: 'future', label: 'My Future', icon: Compass },
+    { id: 'music', label: 'Music', icon: Music2 },
+    { id: 'admin', label: 'Admin', icon: Settings2, badge: unreadCount > 0 ? unreadCount : null }
   ];
 
   const navigateTo = (page: string) => {
@@ -226,7 +326,7 @@ export default function App() {
                 >
                   <div className="flex items-center gap-2.5">
                     <Icon className="w-4 h-4" />
-                    <span>{item.label} Page</span>
+                    <span>{item.label}</span>
                   </div>
                   {item.badge && (
                     <span className="px-2 py-0.5 rounded-full text-[10px] bg-pastel-pink text-[#852783]">

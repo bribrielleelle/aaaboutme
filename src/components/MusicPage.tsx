@@ -201,7 +201,7 @@ export const MusicPage: React.FC<MusicPageProps> = ({
   };
 
   // Genres list
-  const genres = ['All', 'Indie Pop', 'Lo-Fi / Ambient', 'Synth Wave', 'Acoustic Folk', 'Dream Pop'];
+  const genres = ['All', 'R&B / Soul', 'Indie Pop', 'Lo-Fi / Ambient', 'Synth Wave', 'Acoustic Folk', 'Dream Pop'];
 
   const filteredMusic = content.musicList
     .filter(s => selectedGenre === 'All' || s.genre === selectedGenre)
@@ -217,7 +217,7 @@ export const MusicPage: React.FC<MusicPageProps> = ({
           <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2">
               <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-soft-blue text-[#2e3e77]">
-                Roadmap Step 4
+                Heavy Rotation
               </span>
               <span className="text-xs text-slate-500">·</span>
               <span className="text-xs font-medium text-slate-600">Soundtrack & Inspiration</span>
@@ -299,30 +299,69 @@ export const MusicPage: React.FC<MusicPageProps> = ({
               )}
             </div>
 
-            {/* Scrubber Bar */}
-            <div className="space-y-1.5">
-              <div 
-                className="w-full h-2 rounded-full bg-slate-200 cursor-pointer overflow-hidden"
-                onClick={(e) => {
-                  const rect = e.currentTarget.getBoundingClientRect();
-                  const clickX = e.clientX - rect.left;
-                  const ratio = clickX / rect.width;
-                  setProgressSec(Math.floor(ratio * 210));
-                }}
-              >
+            {/* Conditional Spotify Audio Embed vs Ambient Synth Scrubber */}
+            {currentSong.spotifyTrackId ? (
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span className="font-semibold text-slate-800 text-xs">
+                      Official Spotify Player
+                    </span>
+                    <span className="text-[11px] text-slate-500">· Click play to stream audio</span>
+                  </div>
+                  {currentSong.spotifyUrl && (
+                    <a
+                      href={currentSong.spotifyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-100 text-[11px] font-semibold transition-colors border border-emerald-200"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Open on Spotify</span>
+                    </a>
+                  )}
+                </div>
+
+                <div className="w-full rounded-2xl overflow-hidden shadow-xs border border-slate-200 bg-black/5">
+                  <iframe
+                    style={{ borderRadius: '14px' }}
+                    src={`https://open.spotify.com/embed/track/${currentSong.spotifyTrackId}?utm_source=generator&theme=0`}
+                    width="100%"
+                    height="152"
+                    frameBorder="0"
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy"
+                    title={`Spotify Player: ${currentSong.title}`}
+                  />
+                </div>
+              </div>
+            ) : (
+              /* Scrubber Bar */
+              <div className="space-y-1.5">
                 <div 
-                  className="h-full bg-gradient-to-r from-[#95a9e8] to-[#fcbbfa] rounded-full transition-all"
-                  style={{ width: `${Math.min(100, (progressSec / 210) * 100)}%` }}
-                ></div>
+                  className="w-full h-2 rounded-full bg-slate-200 cursor-pointer overflow-hidden"
+                  onClick={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    const clickX = e.clientX - rect.left;
+                    const ratio = clickX / rect.width;
+                    setProgressSec(Math.floor(ratio * 210));
+                  }}
+                >
+                  <div 
+                    className="h-full bg-gradient-to-r from-[#95a9e8] to-[#fcbbfa] rounded-full transition-all"
+                    style={{ width: `${Math.min(100, (progressSec / 210) * 100)}%` }}
+                  ></div>
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-medium text-slate-400">
+                  <span>{formatTime(progressSec)}</span>
+                  <span className="text-[11px] text-slate-400">
+                    {isPlaying ? 'Ambient chime active' : 'Click play for audio'}
+                  </span>
+                  <span>{currentSong.duration}</span>
+                </div>
               </div>
-              <div className="flex items-center justify-between text-[11px] font-medium text-slate-400">
-                <span>{formatTime(progressSec)}</span>
-                <span className="text-[11px] text-slate-400">
-                  {isPlaying ? 'Ambient chime active' : 'Click play for audio'}
-                </span>
-                <span>{currentSong.duration}</span>
-              </div>
-            </div>
+            )}
 
             {/* Control Buttons */}
             <div className="flex items-center justify-between pt-1">
@@ -345,17 +384,19 @@ export const MusicPage: React.FC<MusicPageProps> = ({
                   <SkipBack className="w-5 h-5" />
                 </button>
 
-                <button
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="w-12 h-12 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center shadow-sm transition-all hover:scale-105"
-                  title={isPlaying ? 'Pause' : 'Play'}
-                >
-                  {isPlaying ? (
-                    <Pause className="w-5 h-5 fill-current" />
-                  ) : (
-                    <Play className="w-5 h-5 fill-current ml-0.5" />
-                  )}
-                </button>
+                {!currentSong.spotifyTrackId && (
+                  <button
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    className="w-12 h-12 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center shadow-sm transition-all hover:scale-105"
+                    title={isPlaying ? 'Pause' : 'Play'}
+                  >
+                    {isPlaying ? (
+                      <Pause className="w-5 h-5 fill-current" />
+                    ) : (
+                      <Play className="w-5 h-5 fill-current ml-0.5" />
+                    )}
+                  </button>
+                )}
 
                 <button
                   onClick={handleNext}
@@ -386,31 +427,33 @@ export const MusicPage: React.FC<MusicPageProps> = ({
                 </button>
               </div>
 
-              {/* Volume Slider & Mute Toggle */}
-              <div className="hidden sm:flex items-center gap-2">
-                <button
-                  onClick={() => setIsMuted(!isMuted)}
-                  className="text-slate-400 hover:text-slate-800"
-                  title={isMuted ? 'Unmute' : 'Mute'}
-                >
-                  {isMuted || volume === 0 ? (
-                    <VolumeX className="w-4 h-4 text-rose-500" />
-                  ) : (
-                    <Volume2 className="w-4 h-4 text-slate-400" />
-                  )}
-                </button>
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={isMuted ? 0 : volume}
-                  onChange={(e) => {
-                    setVolume(Number(e.target.value));
-                    if (isMuted) setIsMuted(false);
-                  }}
-                  className="w-20 accent-[#95a9e8] h-1.5 bg-slate-200 rounded-lg cursor-pointer"
-                />
-              </div>
+              {/* Volume Slider & Mute Toggle (Ambient Synth only) */}
+              {!currentSong.spotifyTrackId && (
+                <div className="hidden sm:flex items-center gap-2">
+                  <button
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="text-slate-400 hover:text-slate-800"
+                    title={isMuted ? 'Unmute' : 'Mute'}
+                  >
+                    {isMuted || volume === 0 ? (
+                      <VolumeX className="w-4 h-4 text-rose-500" />
+                    ) : (
+                      <Volume2 className="w-4 h-4 text-slate-400" />
+                    )}
+                  </button>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={isMuted ? 0 : volume}
+                    onChange={(e) => {
+                      setVolume(Number(e.target.value));
+                      if (isMuted) setIsMuted(false);
+                    }}
+                    className="w-20 accent-[#95a9e8] h-1.5 bg-slate-200 rounded-lg cursor-pointer"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -487,9 +530,16 @@ export const MusicPage: React.FC<MusicPageProps> = ({
                   />
 
                   <div className="overflow-hidden">
-                    <h4 className="font-semibold text-sm truncate text-slate-900">
-                      {song.title}
-                    </h4>
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="font-semibold text-sm truncate text-slate-900">
+                        {song.title}
+                      </h4>
+                      {song.spotifyTrackId && (
+                        <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                          Spotify
+                        </span>
+                      )}
+                    </div>
                     <p className="text-xs text-slate-500 truncate">
                       {song.artist} · <span className="italic">{song.album}</span>
                     </p>
@@ -624,11 +674,11 @@ export const MusicPage: React.FC<MusicPageProps> = ({
         </div>
       )}
 
-      {/* Next Up in Roadmap */}
+      {/* Next Up Navigation */}
       <div className="p-6 rounded-2xl bg-white border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Final Roadmap Step:</span>
-          <h4 className="font-serif-display font-bold text-slate-900 text-lg">Roadmap Step 5: Admin Dashboard</h4>
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Continue Exploring:</span>
+          <h4 className="font-serif-display font-bold text-slate-900 text-lg">Admin Dashboard</h4>
           <p className="text-xs text-slate-600">Review form submissions, edit live biography & site settings.</p>
         </div>
         <button
