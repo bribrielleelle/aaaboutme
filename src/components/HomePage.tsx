@@ -14,7 +14,9 @@ import {
   Camera, 
   Music2, 
   Compass,
-  Settings2
+  Settings2,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 import { 
   GithubIcon, 
@@ -47,6 +49,11 @@ export const HomePage: React.FC<HomePageProps> = ({
   const [isEditingPhoto, setIsEditingPhoto] = useState(false);
   const [tempPhotoUrl, setTempPhotoUrl] = useState(content.profilePhotoUrl);
   const [tempCaption, setTempCaption] = useState(content.profilePhotoCaption);
+  const [activePhotoIdx, setActivePhotoIdx] = useState(0);
+
+  const photos = content.profilePhotos && content.profilePhotos.length > 0 
+    ? content.profilePhotos 
+    : [content.profilePhotoUrl];
 
   const copyEmail = () => {
     navigator.clipboard.writeText(content.email);
@@ -228,20 +235,67 @@ export const HomePage: React.FC<HomePageProps> = ({
 
             <div className="relative overflow-hidden rounded-2xl aspect-4/5 bg-slate-100">
               <img
-                src={content.profilePhotoUrl}
+                src={photos[activePhotoIdx] || content.profilePhotoUrl}
                 alt={content.name}
                 referrerPolicy="no-referrer"
                 className="w-full h-full object-cover object-center group-hover:scale-102 transition-transform duration-500"
                 onError={(e) => {
                   // Fallback placeholder image if URL fails
-                  e.currentTarget.src = 'https://i.imgur.com/1okze8g.jpeg';
+                  e.currentTarget.src = 'https://i.imgur.com/h1gicLO.jpeg';
                 }}
               />
+
+              {/* Photo Switcher Navigation Controls */}
+              {photos.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActivePhotoIdx((prev) => (prev - 1 + photos.length) % photos.length);
+                    }}
+                    className="absolute left-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-md"
+                    title="Previous photo"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActivePhotoIdx((prev) => (prev + 1) % photos.length);
+                    }}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1.5 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-md"
+                    title="Next photo"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+
+                  {/* Dot Indicators */}
+                  <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-1.5 z-10">
+                    {photos.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActivePhotoIdx(idx);
+                        }}
+                        className={`h-1.5 rounded-full transition-all ${
+                          idx === activePhotoIdx ? 'w-4 bg-white shadow-xs' : 'w-1.5 bg-white/60 hover:bg-white'
+                        }`}
+                        title={`Photo ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
 
               {/* Photo Edit Trigger Button */}
               <button
                 onClick={() => setIsEditingPhoto(!isEditingPhoto)}
-                className="absolute bottom-3 right-3 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white backdrop-blur-sm shadow-md transition-all text-xs flex items-center gap-1.5"
+                className="absolute top-3 right-3 p-2 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white backdrop-blur-sm shadow-md transition-all text-xs flex items-center gap-1.5 z-10"
                 title="Change or upload photo"
               >
                 <Camera className="w-3.5 h-3.5" />

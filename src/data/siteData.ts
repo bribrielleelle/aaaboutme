@@ -1,3 +1,5 @@
+import { applePlaylistTracks } from './playlistData';
+
 export interface ContactSubmission {
   id: string;
   name: string;
@@ -30,6 +32,7 @@ export interface SongItem {
   favorite: boolean;
   spotifyTrackId?: string;
   spotifyUrl?: string;
+  appleMusicUrl?: string;
 }
 
 export interface FutureGoal {
@@ -51,6 +54,7 @@ export interface SiteContent {
   bioParagraph3: string;
   profilePhotoUrl: string;
   profilePhotoCaption: string;
+  profilePhotos?: string[];
   
   // Contact & Socials
   email: string;
@@ -96,8 +100,12 @@ export const defaultSiteContent: SiteContent = {
   bioParagraph1: "Hi, I'm Brielle Davis! I am a passionate high school student taking my first deep dive into web development and digital design. I love taking ideas from imagination to reality using code, and exploring how modern technology can empower personal storytelling.",
   bioParagraph2: "Beyond programming, my world revolves around music, creative media, and planning for an exciting future in technology and design. This website serves as my digital home and living portfolio for everything I am creating and learning.",
   bioParagraph3: "When I am not coding or studying, you can find me discovering new tracks, curating playlists, experimenting with visual arts, and preparing for college life.",
-  profilePhotoUrl: 'https://i.imgur.com/1okze8g.jpeg',
+  profilePhotoUrl: 'https://i.imgur.com/h1gicLO.jpeg',
   profilePhotoCaption: 'Brielle Davis — High School Portfolio & Creative Space',
+  profilePhotos: [
+    'https://i.imgur.com/h1gicLO.jpeg',
+    'https://i.imgur.com/1okze8g.jpeg'
+  ],
 
   email: 'brielledavis919@gmail.com',
   location: 'United States',
@@ -176,71 +184,8 @@ export const defaultSiteContent: SiteContent = {
     }
   ],
 
-  musicList: [
-    {
-      id: 's1',
-      title: 'BLIND',
-      artist: 'EJ Ross, Jay Versace',
-      album: 'BLIND - Single',
-      duration: '3:03',
-      coverUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27309b4551ff5a12d74dc8ef4a2',
-      genre: 'R&B / Soul',
-      favorite: true,
-      spotifyTrackId: '5AzdIvh2bSJzcPyIwtYDog',
-      spotifyUrl: 'https://open.spotify.com/track/5AzdIvh2bSJzcPyIwtYDog?si=67b87e67b3c746f7'
-    },
-    {
-      id: 's2',
-      title: 'Midnight Coding Flow',
-      artist: 'Subtle Waves',
-      album: 'Lo-Fi Chill & Focus',
-      duration: '2:48',
-      coverUrl: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=400&q=80',
-      genre: 'Lo-Fi / Ambient',
-      favorite: true
-    },
-    {
-      id: 's3',
-      title: 'Electric Euphoria',
-      artist: 'Nova & The Skies',
-      album: 'Daylight Echoes',
-      duration: '3:52',
-      coverUrl: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=400&q=80',
-      genre: 'Synth Wave',
-      favorite: false
-    },
-    {
-      id: 's4',
-      title: 'Acoustic Sunday Reflection',
-      artist: 'Briar Hill',
-      album: 'Quiet Strings',
-      duration: '3:10',
-      coverUrl: 'https://images.unsplash.com/photo-1487180144351-b8472da7d491?auto=format&fit=crop&w=400&q=80',
-      genre: 'Acoustic Folk',
-      favorite: true
-    },
-    {
-      id: 's5',
-      title: 'Pastel Cloud Nine',
-      artist: 'Luna Drift',
-      album: 'Soft Horizons',
-      duration: '3:05',
-      coverUrl: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80',
-      genre: 'Dream Pop',
-      favorite: true
-    },
-    {
-      id: 's6',
-      title: 'Neon Coffee Break',
-      artist: 'Kira Beatmakers',
-      album: 'City Skylines',
-      duration: '2:35',
-      coverUrl: 'https://images.unsplash.com/photo-1518609878373-06d740f60d8b?auto=format&fit=crop&w=400&q=80',
-      genre: 'Lo-Fi / Ambient',
-      favorite: false
-    }
-  ],
-  currentlyPlayingId: 's1',
+  musicList: applePlaylistTracks,
+  currentlyPlayingId: 's_1',
 
   futureGoals: [
     {

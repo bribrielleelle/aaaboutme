@@ -2,7 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-const port = Number.parseInt(process.env.PORT ?? '5000', 10);
+const port = process.env.PORT === '5000' ? 5000 : 3000;
 
 // https://vitejs.dev/config/
 export default defineConfig({

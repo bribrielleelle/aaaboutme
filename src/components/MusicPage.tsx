@@ -201,7 +201,7 @@ export const MusicPage: React.FC<MusicPageProps> = ({
   };
 
   // Genres list
-  const genres = ['All', 'R&B / Soul', 'Indie Pop', 'Lo-Fi / Ambient', 'Synth Wave', 'Acoustic Folk', 'Dream Pop'];
+  const genres = ['All', 'Alternative / Rock', 'R&B / Soul', 'Indie Pop', 'Funk / Groove'];
 
   const filteredMusic = content.musicList
     .filter(s => selectedGenre === 'All' || s.genre === selectedGenre)
@@ -216,27 +216,38 @@ export const MusicPage: React.FC<MusicPageProps> = ({
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="space-y-2 max-w-xl">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-soft-blue text-[#2e3e77]">
-                Heavy Rotation
+              <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#fa2d48]/10 text-[#d81e37] border border-[#fa2d48]/20">
+                Apple Music Playlist
               </span>
               <span className="text-xs text-slate-500">·</span>
-              <span className="text-xs font-medium text-slate-600">Soundtrack & Inspiration</span>
+              <span className="text-xs font-medium text-slate-600">50 Curated Tracks</span>
             </div>
             <h1 className="text-3xl sm:text-4xl font-serif-display font-bold text-slate-900">
               Music & Heavy Rotation
             </h1>
             <p className="text-sm text-slate-600 leading-relaxed">
-              Explore the sounds, indie playlists, and ambient beats that power Brielle's coding sessions and creative workflows.
+              Explore the 50 songs fueling Brielle's creativity, coding sessions, and everyday life — featuring SZA, Panchiko, Steve Lacy, Nirvana, The Smiths, and more.
             </p>
           </div>
 
-          <button
-            onClick={() => setShowAddTrack(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors shadow-xs"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Favorite Track</span>
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5">
+            <a
+              href="https://music.apple.com/us/playlist/pl.u-XkD0j70S2dJAo8x"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#fa2d48] text-white hover:bg-[#e0263f] text-xs font-semibold transition-colors shadow-xs"
+            >
+              <ExternalLink className="w-4 h-4" />
+              <span>Open on Apple Music</span>
+            </a>
+            <button
+              onClick={() => setShowAddTrack(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors shadow-xs"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Add Track</span>
+            </button>
+          </div>
         </div>
       </section>
 
@@ -299,8 +310,41 @@ export const MusicPage: React.FC<MusicPageProps> = ({
               )}
             </div>
 
-            {/* Conditional Spotify Audio Embed vs Ambient Synth Scrubber */}
-            {currentSong.spotifyTrackId ? (
+            {/* Conditional Apple Music Embed vs Spotify vs Ambient Synth Scrubber */}
+            {currentSong.appleMusicUrl ? (
+              <div className="space-y-3 pt-1">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[#fa2d48] animate-pulse"></span>
+                    <span className="font-semibold text-slate-800 text-xs">
+                      Apple Music Player
+                    </span>
+                    <span className="text-[11px] text-slate-500">· Click play to stream song preview</span>
+                  </div>
+                  <a
+                    href={currentSong.appleMusicUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#fa2d48]/10 text-[#d81e37] hover:bg-[#fa2d48]/20 text-[11px] font-semibold transition-colors border border-[#fa2d48]/20"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Open in Apple Music</span>
+                  </a>
+                </div>
+
+                <div className="w-full rounded-2xl overflow-hidden shadow-xs border border-slate-200 bg-black/5">
+                  <iframe
+                    allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
+                    frameBorder="0"
+                    height="175"
+                    style={{ width: '100%', maxWidth: '100%', overflow: 'hidden', borderRadius: '14px', background: 'transparent' }}
+                    sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
+                    src={currentSong.appleMusicUrl.replace('https://music.apple.com', 'https://embed.music.apple.com')}
+                    title={`Apple Music Player: ${currentSong.title}`}
+                  />
+                </div>
+              </div>
+            ) : currentSong.spotifyTrackId ? (
               <div className="space-y-3 pt-1">
                 <div className="flex items-center justify-between text-xs">
                   <div className="flex items-center gap-2">
@@ -384,7 +428,7 @@ export const MusicPage: React.FC<MusicPageProps> = ({
                   <SkipBack className="w-5 h-5" />
                 </button>
 
-                {!currentSong.spotifyTrackId && (
+                {!currentSong.spotifyTrackId && !currentSong.appleMusicUrl && (
                   <button
                     onClick={() => setIsPlaying(!isPlaying)}
                     className="w-12 h-12 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white flex items-center justify-center shadow-sm transition-all hover:scale-105"
@@ -428,7 +472,7 @@ export const MusicPage: React.FC<MusicPageProps> = ({
               </div>
 
               {/* Volume Slider & Mute Toggle (Ambient Synth only) */}
-              {!currentSong.spotifyTrackId && (
+              {!currentSong.spotifyTrackId && !currentSong.appleMusicUrl && (
                 <div className="hidden sm:flex items-center gap-2">
                   <button
                     onClick={() => setIsMuted(!isMuted)}
@@ -534,6 +578,11 @@ export const MusicPage: React.FC<MusicPageProps> = ({
                       <h4 className="font-semibold text-sm truncate text-slate-900">
                         {song.title}
                       </h4>
+                      {song.appleMusicUrl && (
+                        <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#fa2d48]/10 text-[#d81e37] border border-[#fa2d48]/20">
+                          Apple Music
+                        </span>
+                      )}
                       {song.spotifyTrackId && (
                         <span className="shrink-0 px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
                           Spotify

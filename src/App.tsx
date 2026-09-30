@@ -88,27 +88,24 @@ export default function App() {
             updated = true;
           }
         }
-        if (parsed.musicList) {
-          parsed.musicList = parsed.musicList.map(song => {
-            if (song.id === 's1' || song.title === 'Golden Hour Memories') {
-              updated = true;
-              return {
-                ...song,
-                title: 'BLIND',
-                artist: 'EJ Ross, Jay Versace',
-                album: 'BLIND - Single',
-                duration: '3:03',
-                coverUrl: 'https://image-cdn-ak.spotifycdn.com/image/ab67616d0000b27309b4551ff5a12d74dc8ef4a2',
-                genre: 'R&B / Soul',
-                spotifyTrackId: '5AzdIvh2bSJzcPyIwtYDog',
-                spotifyUrl: 'https://open.spotify.com/track/5AzdIvh2bSJzcPyIwtYDog?si=67b87e67b3c746f7'
-              };
-            }
-            return song;
-          });
+        if (!parsed.musicList || parsed.musicList.length < 50 || parsed.musicList[0]?.id === 's1' || parsed.musicList[0]?.title === 'BLIND' || parsed.musicList[0]?.title === 'And I Love Her') {
+          parsed.musicList = defaultSiteContent.musicList;
+          parsed.currentlyPlayingId = defaultSiteContent.currentlyPlayingId;
+          updated = true;
         }
-        if (parsed.profilePhotoUrl === 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80' || !parsed.profilePhotoUrl) {
-          parsed.profilePhotoUrl = 'https://i.imgur.com/1okze8g.jpeg';
+        if (parsed.currentlyPlayingId === 's1') {
+          parsed.currentlyPlayingId = 's_1';
+          updated = true;
+        }
+        if (parsed.profilePhotoUrl === 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80' || parsed.profilePhotoUrl === 'https://i.imgur.com/1okze8g.jpeg' || !parsed.profilePhotoUrl) {
+          parsed.profilePhotoUrl = 'https://i.imgur.com/h1gicLO.jpeg';
+          updated = true;
+        }
+        if (!parsed.profilePhotos || !parsed.profilePhotos.includes('https://i.imgur.com/h1gicLO.jpeg')) {
+          parsed.profilePhotos = [
+            'https://i.imgur.com/h1gicLO.jpeg',
+            'https://i.imgur.com/1okze8g.jpeg'
+          ];
           updated = true;
         }
         if (!parsed.careerAspiration || parsed.careerAspiration === 'Creative Technologist & Frontend Software Engineer') {
